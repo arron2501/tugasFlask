@@ -1,0 +1,130 @@
+<!-- Menggabungkan atau join konten layout.html dengan konten dari file index.html -->
+{% extends "layout.html" %}
+
+<!-- Mengatur title website -->
+{% block title %}{{ title }} - Home{% endblock %}
+
+<!-- Mengatur konten yang akan dirender oleh template child -->
+{% block content %}
+    <!-- Konten yang dirender -->
+    <!-- Bagian hero -->
+    <div class="mb-5">
+        <div class="jumbotron-fluid hero d-flex flex-column justify-content-center">
+            <div class="container text-center text-white">
+                <h1 class="display-4" style="font-weight: bold;">RAVEN CASE</h1>
+                <p class="lead"><span class="typed"></span></p>
+                <p class="lead">
+                    <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bagian kupon atau voucer -->
+    <div class="container mb-5">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3><strong>CLAIM YOUR COUPONS HERE!</strong></h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="card" style="border: none;">
+                    <div class="card-body shadow-lg bg-white rounded">
+                        <h5 class="card-title"><strong>FREE DELIVERY</strong></h5>
+                        <hr>
+                        <p class="card-text">Free delivery up to Rp10.000 with minimum spend of Rp50.000</p>
+                        <a href="#" class="btn btn-primary">Claim Coupon</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="card" style="border: none;">
+                    <div class="card-body shadow-lg bg-white rounded">
+                        <h5 class="card-title"><strong>30% DISCOUNT</strong></h5>
+                        <hr>
+                        <p class="card-text">Purchase your first case with 30% off discount on your first order</p>
+                        <a href="#" class="btn btn-primary">Claim Coupon</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bagian produk baru -->
+    <div class="container mb-5">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3><strong>NEW ARRIVALS!</strong></h3>
+            </div>
+        </div>
+        <div class="card-deck">
+            <div class="card shadow-lg bg-white rounded" style="border: none;">
+                <!-- Menampilkan gambar kedalam card, gambar didapat dari folder /static/images/ -->
+                <img class="card-img-top" src="{{ url_for('static', filename='images/neon1.jpg') }}" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title"><strong>Neon Case</strong></h5>
+                    <p class="card-text">Super high quality cases with Neon Design, made with love</p>
+                </div>
+            </div>
+            <div class="card shadow-lg bg-white rounded" style="border: none;">
+                <!-- Menampilkan gambar kedalam card, gambar didapat dari folder /static/images/ -->
+                <img class="card-img-top" src="{{ url_for('static', filename='images/fortnite1.jpg') }}" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title"><strong>Fortnite Case</strong></h5>
+                    <p class="card-text">Super high quality cases with Fortnite Design, made with love</p>
+                </div>
+            </div>
+            <div class="card shadow-lg bg-white rounded" style="border: none;">
+                <!-- Menampilkan gambar kedalam card, gambar didapat dari folder /static/images/ -->
+                <img class="card-img-top" src="{{ url_for('static', filename='images/marvel1.jpg') }}" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title"><strong>Marvel Case</strong></h5>
+                    <p class="card-text">Super high quality cases with Marvel Design, made with love</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bagian jumbotron dengan efek parallax -->
+    <div>
+        <div class="jumbotron-fluid showcaseonepiece d-flex flex-column justify-content-center">
+            <div class="container text-center text-white">
+                <h1 class="display-4">ONE PIECE CASE</h1>
+                <p class="lead">Super high quality cases with One Piece Design, made with love</p>
+            </div>
+        </div>
+
+        <div class="jumbotron-fluid showcaseneon d-flex flex-column justify-content-center">
+            <div class="container text-center text-white">
+                <h1 class="display-4">NEON CASE</h1>
+                <p class="lead">Super high quality cases with Neon Design, made with love</p>
+            </div>
+        </div>
+
+        <div class="jumbotron-fluid showcasefortnite d-flex flex-column justify-content-center">
+            <div class="container text-center text-white">
+                <h1 class="display-4">FORTNITE CASE</h1>
+                <p class="lead">Super high quality cases with Fortnite Design, made with love</p>
+            </div>
+        </div>
+
+        <div class="jumbotron-fluid showcasemarvel d-flex flex-column justify-content-center">
+            <div class="container text-center text-white">
+                <h1 class="display-4">MARVEL CASE</h1>
+                <p class="lead">Super high quality cases with Marvel Design, made with love</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Menambahkan script custom, untuk menjalankan file JavaScript yang sudah ditambahkan pada file layout.html -->
+    <!-- Script ini akan menampilkan teks dengan efek seperti sedang diketik -->
+    <script>
+        var typed = new Typed('.typed', {
+            strings: ["Best Quality!", "Best Price!"],
+            typeSpeed: 70,
+            delaySpeed: 200,
+            loop: true,
+        });
+    </script>
+{% endblock %}

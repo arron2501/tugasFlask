@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- Mengatur title website -->
+    <title>{% block title %}{{ title }}{% endblock %} - Raven Case</title>
+
+    <!-- Mengatur icon website -->
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/shortcut.png') }}" type="image/x-icon">
+
+    <!-- Menambahkan file css untuk keperluan styling -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" type="text/css">
+
+    <!-- Menambahkan CDN Bootstrap 4.6, untuk menggunakan class-class dari Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+
+    <!-- Menambahkan custom font dari Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+
+    <!-- Mengatur font menjadi Nunito, yang telah ditambahkan diatas -->
+    <style> body { font-family: 'Nunito', sans-serif; font-size: 0.9rem;} </style>
+
+    <!-- Adding custom JavaScript -->
+    <script src="{{ url_for('static', filename='js/typed.js') }}" type="text/JavaScript"> </script>
+</head>
+<body>
+    <!-- Bagian menu navigasi, dibuat menggunakan Bootstrap -->
+    <div id="app">
+        <nav class="navbar fixed-top navbar-expand-md navbar-light shadow-sm" style="background-color: #CBF3F9;">
+            <div class="container">
+                <a class="navbar-brand" href="/">
+                    <!-- Menambahkan logo pada navbar, logo didapat dari folder /static/images/ -->
+                    <img src="{{ url_for('static', filename='images/icon.png') }}" alt="Raven Case" height="30">
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Daftar menu navigasi -->
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <!-- Bagian kiri menu navigasi -->
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item active"> <a href="/" class="nav-link">HOME</a> </li>
+                        <li class="nav-item"> <a href="/" class="nav-link">CASES</a> </li>
+                        <li class="nav-item"> <a href="/" class="nav-link">FAQ</a> </li>
+                        <li class="nav-item"> <a href="/" class="nav-link">ABOUT US</a> </li>
+                    </ul>
+
+                    <!-- Bagian kanan menu navigasi -->
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item pr-2">
+                            <a class="nav-link btn-sm" href="/">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn-sm btn-primary text-white" href="/">Register</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Bagian utama -->
+        <main>
+            <!-- Menambahkan blok konten, sehingga template child dapat merender atau menampilkan kontennya -->
+            {% block content %}{% endblock %}
+        </main>
+
+        <!-- Bagian footer -->
+        <footer>
+            <div class="text-center text-white py-4" style="background: #1C252E">
+                <div class="footer-copyright text-center">
+                    © 2020 Raven Case:<strong> All Rights Reserved.</strong>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Menambahkan link CDN JavaScript opsional, untuk menunjang kebutuhan Bootstrap (disarankan oleh Bootstrap) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
+</body>
+</html>
