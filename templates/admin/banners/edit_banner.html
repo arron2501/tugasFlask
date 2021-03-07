@@ -15,6 +15,7 @@
     <div class="container">
         <div class="row d-flex justify-content-center">
             <div class="col-md-6 mt-5">
+                <!-- Kode untuk menampilkan pesan flash -->
                 {% with messages = get_flashed_messages() %}
                     {% if messages %}
                         {% for message in messages %}
@@ -23,11 +24,14 @@
                     {% endif %}
                 {% endwith %}
                 <h2 class="text-center">Edit Banner</h2>
+                <!-- Form untuk mengedit banner -->
                 <form action="/editbanner/{{ data.id }}" enctype=multipart/form-data method="post">
                     <div class="form-group">
                         <label for="banner">Previous banner</label>
+                        <!-- Jika tidak ada banner, maka akan tertulis tidak ada banner -->
                         {% if data.banner == 'uploads/banners/' or data.banner == '' %}
                             <input type="text" class="form-control" value="No banner displayed" readonly>
+                        <!-- Jika terdapat banner, maka akan tertulis nama file banner yang ada -->
                         {% else %}
                             <input type="text" class="form-control" value="{{ data.banner }}" readonly>
                         {% endif %}

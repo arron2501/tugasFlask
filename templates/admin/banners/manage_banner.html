@@ -15,6 +15,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12 text-center mt-5">
+                <!-- Kode untuk menampilkan pesan flash -->
                 {% with messages = get_flashed_messages() %}
                     {% if messages %}
                         {% for message in messages %}
@@ -23,9 +24,11 @@
                     {% endif %}
                 {% endwith %}
                 <h1>Manage Banner</h1>
+                <!-- Tombol untuk menambahkan banner baru -->
                 <div class="mt-4">
                     <a class="btn btn-primary" href="/addbanner" role="button">+ Add Banner</a>
                 </div>
+                <!-- List tabel yang berisikan data-data banner -->
                 <div class="mt-4 table-responsive">
                     <table class="table table-hover table-striped table-bordered">
                         <thead>

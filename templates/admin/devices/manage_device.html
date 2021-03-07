@@ -15,6 +15,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12 text-center mt-5">
+                <!-- Kode untuk menampilkan pesan flash -->
                 {% with messages = get_flashed_messages() %}
                     {% if messages %}
                         {% for message in messages %}
@@ -23,9 +24,11 @@
                     {% endif %}
                 {% endwith %}
                 <h1>Manage Devices</h1>
+                <!-- Tombol untuk menambahkan device baru -->
                 <div class="mt-4">
                     <a class="btn btn-primary" href="/adddevice" role="button">+ Add Devices</a>
                 </div>
+                <!-- List tabel yang menampilkan data-data device -->
                 <div class="mt-4 table-responsive">
                     <table class="table table-hover table-striped table-bordered">
                         <thead>

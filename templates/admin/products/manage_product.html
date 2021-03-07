@@ -15,6 +15,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12 text-center mt-5">
+                <!-- Kode untuk menampilkan pesan flash -->
                 {% with messages = get_flashed_messages() %}
                     {% if messages %}
                         {% for message in messages %}
@@ -23,9 +24,11 @@
                     {% endif %}
                 {% endwith %}
                 <h1>Manage Product</h1>
+                <!-- Tombol untuk menambahkan produk baru -->
                 <div class="mt-4">
                     <a class="btn btn-primary" href="/addproduct" role="button">+ Add Product</a>
                 </div>
+                <!-- List table yang berisi data-data dari produk -->
                 <div class="mt-4 table-responsive">
                     <table class="table table-hover table-striped table-bordered">
                         <thead>

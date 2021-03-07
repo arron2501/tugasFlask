@@ -15,6 +15,7 @@
     <div class="container">
         <div class="row d-flex justify-content-center">
             <div class="col-md-6 mt-5">
+                <!-- Kode untuk menampilan pesan flash -->
                 {% with messages = get_flashed_messages() %}
                     {% if messages %}
                         {% for message in messages %}
@@ -23,16 +24,16 @@
                     {% endif %}
                 {% endwith %}
                 <h2 class="text-center">Add Banner</h2>
-                    <form action="{{ url_for('addbanner') }}" enctype=multipart/form-data method="post">
-                        <div class="form-group">
-                            <label for="banner">Banner</label>
-                            <input type="file" class="form-control-file" id="banner" name="banner">
-                        </div>
-                        <div class="mt-4 text-center">
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                        </div>
-                    </form>
-                </div>
+                <!-- Form penambahan banner -->
+                <form action="{{ url_for('addbanner') }}" enctype=multipart/form-data method="post">
+                    <div class="form-group">
+                        <label for="banner">Banner</label>
+                        <input type="file" class="form-control-file" id="banner" name="banner">
+                    </div>
+                    <div class="mt-4 text-center">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

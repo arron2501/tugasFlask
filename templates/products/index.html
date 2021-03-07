@@ -12,6 +12,7 @@
 <!-- Mengatur konten yang akan dirender oleh template child -->
 {% block content %}
     <!-- Konten yang dirender -->
+    <!-- Menampilkan banner secara dynamic -->
     <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
         <ol class="carousel-indicators">
             {% for row in banners %}
@@ -42,6 +43,7 @@
             </div>
         </div>
         <div class="row">
+            <!-- Menampilkan produk secara dynamic -->
             {% for row in products %}
             <div class="col-md-4">
                 <div class="card-deck">
@@ -50,6 +52,7 @@
                         <div class="card-body">
                             <h5 class="card-title">{{ row.title }}</h5>
                             <p class="card-text">{{ row.description }}</p>
+                            <!-- Memanggil template filter currencyFormat untuk memformat harga menjadi Rupiah -->
                             <p class="card-text font-weight-bold">{{ row.price  | currencyFormat }}</p>
                             <a href="/products/{{ row.id }}" class="stretched-link"></a>
                         </div>
