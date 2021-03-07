@@ -689,7 +689,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // current array position
 	      self.arrayPos = 0;
 	
-	      // index of string to stop backspacing on
+	      // add_product.html of string to stop backspacing on
 	      self.stopNum = 0;
 	
 	      // Looping logic

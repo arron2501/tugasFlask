@@ -1,0 +1,59 @@
+<!-- Menggabungkan atau join konten layout.html dengan konten dari file add_product.html.html -->
+{% extends "layout.html" %}
+
+<!-- Mengatur title website -->
+{% block title %}Login {{ title }}{% endblock %}
+
+<!-- Mengatur konten yang akan dirender oleh template child -->
+{% block content %}
+    <!-- Konten yang dirender -->
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <p class="text-center" style="color: green">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+            <div class="card">
+                <div class="card-header">Login</div>
+
+                <div class="text-center p-4">
+                    <img src="{{ url_for('static', filename='images/logo.png') }}" height="200">
+                </div>
+
+                <div class="card-body">
+                    <form method="POST" action="/login">
+
+                        <div class="form-group row">
+                            <label for="email" class="col-md-4 col-form-label text-md-right">Email Address</label>
+
+                            <div class="col-md-6">
+                                <input id="email" type="email" class="form-control" name="email" value="" required autocomplete="email" autofocus>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="password" class="col-md-4 col-form-label text-md-right">Password</label>
+
+                            <div class="col-md-6">
+                                <input id="password" type="password" class="form-control" name="password" required autocomplete="current-password">
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-0">
+                            <div class="col-md-8 offset-md-4">
+                                <button type="submit" class="btn btn-primary">
+                                    Login
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

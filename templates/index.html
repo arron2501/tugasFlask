@@ -1,8 +1,13 @@
-<!-- Menggabungkan atau join konten layout.html dengan konten dari file index.html -->
+<!-- Menggabungkan atau join konten layout.html dengan konten dari file add_product.html.html -->
 {% extends "layout.html" %}
 
 <!-- Mengatur title website -->
 {% block title %}{{ title }} - Home{% endblock %}
+
+<!-- Mengatur css -->
+{% block css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}" type="text/css">
+{% endblock %}
 
 <!-- Mengatur konten yang akan dirender oleh template child -->
 {% block content %}
