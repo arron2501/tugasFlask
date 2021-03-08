@@ -10,8 +10,9 @@ ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png'}
 app = Flask(__name__)
 
 # Mengatur lokasi folder untuk menempatkan file yang akan diupload
-app.config['MOCKUPS_UPLOAD_FOLDER'] = './static/images/uploads/mockups'
-app.config['BANNERS_UPLOAD_FOLDER'] = './static/images/uploads/banners'
+# './static/images/uploads/mockups' and './static/images/uploads/banners'
+app.config['MOCKUPS_UPLOAD_FOLDER'] = '\\'.join('./static/images/uploads/mockups'.split("/"))
+app.config['BANNERS_UPLOAD_FOLDER'] = '\\'.join('./static/images/uploads/banners'.split("/"))
 
 app.config['SECRET_KEY'] = 'ravencase_##$@%%'
 
