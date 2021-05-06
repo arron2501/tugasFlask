@@ -3,12 +3,20 @@ from flask import Flask, render_template, redirect, request, url_for, flash, ses
 from flask_mysqldb import MySQL
 from datetime import datetime, timedelta
 from werkzeug.utils import secure_filename
+from flask_mail import Mail, Message
 
 # Mengatur ekstensi yang diperbolehkan untuk diupload
 ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png'}
 
 app = Flask(__name__)
 
+# Setting flask-mail untuk gmail
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USERNAME'] = 'ravencase.testflaskmail@gmail.com'
+app.config['MAIL_PASSWORD'] = 'testflaskmail'
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = False
 
 # Mengatur lokasi folder untuk menempatkan file yang akan diupload
 # './static/images/uploads/mockups' and './static/images/uploads/banners'
@@ -111,7 +119,20 @@ def register():
             mysql.connection.commit()
             cursor.close()
             flash('Successfully registered! You can login now!')
-            return redirect(url_for('login'))
+
+            # Mengirim email greetings new user
+            msg = Message("Registration Success! 🎉", sender=("Raven Case Team", app.config.get("MAIL_USERNAME")),
+                          recipients=[(name, email)])
+            msg.html = render_template('email/welcome_user.html')
+
+            try:
+                mail = Mail(app)
+                mail.connect()
+                mail.send(msg)
+                print('Email sent!')
+                return redirect(url_for('login'))
+            except:
+                return print('Failed to send email!')
     # Apabila requestnya GET, maka sistem akan menampilkan form register
     else:
         return render_template('auth/register.html', footer_place="fixed-bottom", register_status="active")
