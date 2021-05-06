@@ -2,7 +2,7 @@
 {% extends "layout.html" %}
 
 <!-- Mengatur title website -->
-{% block title %}Register {{ title }}{% endblock %}
+{% block title %}Register Admin {{ title }}{% endblock %}
 
 <!-- Mengatur konten yang akan dirender oleh template child -->
 {% block content %}
@@ -19,13 +19,13 @@
                 {% endif %}
                 {% endwith %}
                 <div class="card">
-                    <div class="card-header">Register</div>
+                    <div class="card-header">Register Admin</div>
 {#                    <div class="text-center p-4">#}
 {#                        <img src="{{ url_for('static', filename='images/logo.png') }}" height="200">#}
 {#                    </div>#}
                     <div class="card-body">
                         <!-- Form register -->
-                        <form method="POST" action="/register">
+                        <form method="POST" action="/register_admin">
                             <div class="form-group row">
                                 <label for="name" class="col-md-4 col-form-label text-md-right">Name</label>
                                 <div class="col-md-6">
@@ -52,7 +52,7 @@
                             </div>
                             <div class="form-group row mb-0">
                                 <div class="col-md-6 offset-md-4">
-                                    <button type="submit" class="btn btn-primary">Register</button>
+                                    <button type="submit" class="btn btn-primary">Register Admin</button>
                                 </div>
                             </div>
                         </form>

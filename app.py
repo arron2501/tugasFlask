@@ -39,7 +39,7 @@ mysql = MySQL(app)
 @app.route('/')
 def index():
     # Menampilkan file html add_product.html, dan mengirim data title
-    # Jika use login, maka akan menampilkan menu khusus saat user telah login
+    # Jika user login, maka akan menampilkan menu khusus saat user telah login
     if "name" in session:
         session["loggedin"] = True
     # Sebaliknya, maka akan menampilkan menu untuk login/register
@@ -69,14 +69,26 @@ def login():
             session['loggedin'] = True
             session['id'] = result['id']
             session['name'] = result['name']
-            return redirect(url_for('index'))
+            session['role_id'] = result['role_id']
+            # Jika role_id nya 1 (member), maka otomatis akan redirect ke halaman khusus client
+            if session.get('role_id') == 1:
+                return redirect(url_for('index'))
+            # Jika role_id nya 0 (admin), maka otomatis akan redirect ke halaman khusus admin
+            if session.get('role_id') == 0:
+                return redirect(url_for('admin'))
         # Apabila tidak cocok maka akan tampil pesan flash berikut
         else:
             flash('Incorrect username/password!')
     else:
-        # User akan diredirect ke page index apalagi mengakses halaman login pada saat user tsb sudah login
+        # User dan admin akan diredirect ke page indexnya masing-masing apabila,
+        # mengakses halaman login pada saat user/admin tsb sudah login
         if "name" in session:
-            return redirect(url_for('index'))
+            # Jika role_id nya 1 (member), maka otomatis akan redirect ke halaman khusus client
+            if session.get('role_id') == 1:
+                return redirect(url_for('index'))
+            # Jika role_id nya 0 (admin), maka otomatis akan redirect ke halaman khusus admin
+            if session.get('role_id') == 0:
+                return redirect(url_for('admin'))
     # Apabila requestnya GET, maka sistem akan menampilkan form login
     return render_template('auth/login.html', footer_place="fixed-bottom", login_status="active")
 
@@ -97,7 +109,8 @@ def register():
     if request.method == 'POST' and 'name' in request.form and 'email' in request.form and 'password' in request.form:
         # Apabila requestnya POST, maka sistem akan mengambil value dari inputan dan mengirim ke database
         id = None
-        role_id = None
+        # Set role_id ke 1, dimana role_id tsb dikhususkan untuk member
+        role_id = 1
         name = request.form['name']
         email = request.form['email']
         # Mengubah password yang diketik dari tipe teks ke md5
@@ -119,12 +132,10 @@ def register():
             mysql.connection.commit()
             cursor.close()
             flash('Successfully registered! You can login now!')
-
             # Mengirim email greetings new user
             msg = Message("Registration Success! 🎉", sender=("Raven Case Team", app.config.get("MAIL_USERNAME")),
                           recipients=[(name, email)])
             msg.html = render_template('email/welcome_user.html')
-
             try:
                 mail = Mail(app)
                 mail.connect()
@@ -439,8 +450,45 @@ def deletebanner(id):
 
 @app.route('/admin')
 def admin():
-    # Fungsi untuk menampilkan halaman admin
+    # Menghalangi member agar tidak bisa masuk ke halaman admin
+    if session['loggedin'] == True and session.get('role_id') != 0:
+        print('Member not allowed to access admin page!')
+        return redirect(url_for('index'))
     return render_template('/admin/index.html')
+
+@app.route('/register_admin', methods=['GET','POST'])
+def register_admin():
+    # Proses register admin
+    if request.method == 'POST' and 'name' in request.form and 'email' in request.form and 'password' in request.form:
+        # Apabila requestnya POST, maka sistem akan mengambil value dari inputan dan mengirim ke database
+        id = None
+        # Set role_id ke 0, dimana role_id tsb dikhususkan untuk admin
+        role_id = 0
+        name = request.form['name']
+        email = request.form['email']
+        # Mengubah password yang diketik dari tipe teks ke md5
+        password = hashlib.md5(request.form['password'].encode()).hexdigest()
+        created_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        updated_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        data = (id, role_id, name, email, password, created_at, updated_at)
+        # Proses komunikasi dengan database
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT * FROM users WHERE email = %s', (email,))
+        users = cursor.fetchone()
+        # Jika data yang diinput sudah ada di database, maka akan muncul pesan berikut
+        if users:
+            flash('Email already registered!')
+            return redirect(url_for('register_admin'))
+        # Jika data yang diinput unik, maka data akan dikirim ke database
+        else:
+            cursor.execute("""INSERT INTO users VALUES("%s", "%s", "%s", "%s", "%s", "%s", "%s")""" % data)
+            mysql.connection.commit()
+            cursor.close()
+            flash('Successfully registered! You can login now!')
+            return redirect(url_for('login'))
+    # Apabila requestnya GET, maka sistem akan menampilkan form register admin
+    else:
+        return render_template('auth/register_admin.html', footer_place="fixed-bottom", register_status="active")
 
 if __name__ == '__main__':
     app.run()
