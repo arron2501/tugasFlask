@@ -1,7 +1,7 @@
 import MySQLdb, os, hashlib
 from flask import Flask, render_template, redirect, request, url_for, flash, session
 from flask_mysqldb import MySQL
-from datetime import datetime
+from datetime import datetime, timedelta
 from werkzeug.utils import secure_filename
 
 # Mengatur ekstensi yang diperbolehkan untuk diupload
@@ -9,12 +9,16 @@ ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png'}
 
 app = Flask(__name__)
 
+
 # Mengatur lokasi folder untuk menempatkan file yang akan diupload
 # './static/images/uploads/mockups' and './static/images/uploads/banners'
 app.config['MOCKUPS_UPLOAD_FOLDER'] = '\\'.join('./static/images/uploads/mockups'.split("/"))
 app.config['BANNERS_UPLOAD_FOLDER'] = '\\'.join('./static/images/uploads/banners'.split("/"))
 
 app.config['SECRET_KEY'] = 'ravencase_##$@%%'
+
+# Mengatur lamanya session akan tersimpan (opsional)
+app.permanent_session_lifetime = timedelta(days=1)
 
 # Mengatur konfigurasi database
 app.config['MYSQL_HOST'] = 'localhost'
@@ -27,6 +31,12 @@ mysql = MySQL(app)
 @app.route('/')
 def index():
     # Menampilkan file html add_product.html, dan mengirim data title
+    # Jika use login, maka akan menampilkan menu khusus saat user telah login
+    if "name" in session:
+        session["loggedin"] = True
+    # Sebaliknya, maka akan menampilkan menu untuk login/register
+    else:
+        session["loggedin"] = False
     return render_template('index.html', title="100% QUALITY CUSTOM CASES", home_status="active", nav_place="fixed-top")
 
 @app.route('/login', methods=['GET','POST'])
@@ -44,6 +54,10 @@ def login():
         # Apabila inputan sama dengan atau cocok dengan data pada database,
         # Maka statemen berikut akan diset
         if result:
+            # Session user
+            # Menyalakan timer session
+            session.permanent = True
+            # Fungsi loggedin ini sebagai statemen untuk menampilkan menu khusus saat user sudah login
             session['loggedin'] = True
             session['id'] = result['id']
             session['name'] = result['name']
@@ -51,14 +65,19 @@ def login():
         # Apabila tidak cocok maka akan tampil pesan flash berikut
         else:
             flash('Incorrect username/password!')
+    else:
+        # User akan diredirect ke page index apalagi mengakses halaman login pada saat user tsb sudah login
+        if "name" in session:
+            return redirect(url_for('index'))
     # Apabila requestnya GET, maka sistem akan menampilkan form login
     return render_template('auth/login.html', footer_place="fixed-bottom", login_status="active")
 
 @app.route('/logout')
 def logout():
     # Proses logout
-    # Statemen berikut akan diset
+    # Mengatur agar tombol login/register tampil kembali
     session['loggedin'] = False
+    # Menghapus semua data session
     session.pop('id', None)
     session.pop('name', None)
     # Kemudian kembali ke landing page
