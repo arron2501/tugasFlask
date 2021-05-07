@@ -53,6 +53,16 @@ def index():
         session["loggedin"] = False
     return render_template('index.html', title="100% QUALITY CUSTOM CASES", home_status="active", nav_place="fixed-top")
 
+@app.route('/contactus')
+def contactus():
+    # Harus login terlebih dahulu
+    if session["loggedin"] == True:
+        return render_template('contactus.html', title="100% QUALITY CUSTOM CASES", contact_status="active", nav_place="fixed-top", footer_place="fixed-bottom")
+    # Apabila belum login akan redirect kehalaman login
+    else:
+        flash('You must logged in!')
+        return redirect(url_for('login'))
+
 @app.route('/login', methods=['GET','POST'])
 def login():
     # Proses login
@@ -212,6 +222,7 @@ def checkout(id):
             flash('Please select a device!')
             return redirect(url_for('showProduct', id=id))
     else:
+        flash('You must logged in!')
         return redirect(url_for('login'))
 
 @app.route('/checkout_success/<string:id>', methods=['GET','POST'])
@@ -235,6 +246,7 @@ def checkout_success(id):
             flash('Please select a device!')
             return redirect(url_for('showProduct', id=id))
     else:
+        flash('You must logged in!')
         return redirect(url_for('login'))
 
 def allowed_file(filename):
@@ -277,7 +289,11 @@ def addproduct():
         return redirect(url_for('addproduct'))
     # Apabila requestnya GET, maka sistem akan menampilkan form tambah produk
     else:
-        return render_template('admin/products/add_product.html')
+        if session['loggedin'] == True and session.get('role_id') == 0:
+            return render_template('admin/products/add_product.html')
+        else:
+            print('Masuk dulu sebagai admin!')
+            return redirect(url_for('admin'))
 
 @app.route('/manageproduct', methods=['GET','POST'])
 def manageproduct():
@@ -286,7 +302,13 @@ def manageproduct():
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute("SELECT * FROM products")
     result = cursor.fetchall()
-    return render_template('admin/products/manage_product.html', products=result)
+
+    # Memastikan apakah yang membuka halaman adalah admin
+    if session['loggedin'] == True and session.get('role_id') == 0:
+        return render_template('admin/products/manage_product.html', products=result)
+    else:
+        print('Masuk dulu sebagai admin!')
+        return redirect(url_for('admin'))
 
 @app.route('/editproduct/<id>', methods=['GET','POST'])
 def editproduct(id):
@@ -319,18 +341,26 @@ def editproduct(id):
     # Apabila requestnya GET, maka sistem akan menampilkan form edit produk
     else:
         cursor.close()
-        return render_template('admin/products/edit_product.html', data=result)
+        if session['loggedin'] == True and session.get('role_id') == 0:
+            return render_template('admin/products/edit_product.html', data=result)
+        else:
+            print('Masuk dulu sebagai admin!')
+            return redirect(url_for('admin'))
 
 @app.route('/deleteproduct/<id>', methods=['GET','POST'])
 def deleteproduct(id):
     # Fungsi untuk menghapus produk
     # Proses komunikasi dengan database
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute("DELETE FROM products WHERE id='%s'" % id)
-    mysql.connection.commit()
-    cursor.close()
-    flash('Successfully deleted!')
-    return redirect(url_for('manageproduct'))
+    if session['loggedin'] == True and session.get('role_id') == 0:
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute("DELETE FROM products WHERE id='%s'" % id)
+        mysql.connection.commit()
+        cursor.close()
+        flash('Successfully deleted!')
+        return redirect(url_for('manageproduct'))
+    else:
+        print('Masuk dulu sebagai admin!')
+        return redirect(url_for('admin'))
 
 @app.route('/managedevice', methods=['GET','POST'])
 def managedevice():
@@ -339,7 +369,13 @@ def managedevice():
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute("SELECT * FROM devices")
     result = cursor.fetchall()
-    return render_template('admin/devices/manage_device.html', devices=result)
+
+    # Memastikan apakah yang membuka halaman adalah admin
+    if session['loggedin'] == True and session.get('role_id') == 0:
+        return render_template('admin/devices/manage_device.html', devices=result)
+    else:
+        print('Masuk dulu sebagai admin!')
+        return redirect(url_for('admin'))
 
 @app.route('/adddevice', methods=['GET','POST'])
 def adddevice():
@@ -364,7 +400,11 @@ def adddevice():
         return redirect(url_for('managedevice'))
     # Apabila requestnya GET, maka sistem akan menampilkan form tambah device
     else:
-        return render_template('admin/devices/add_device.html')
+        if session['loggedin'] == True and session.get('role_id') == 0:
+            return render_template('admin/devices/add_device.html')
+        else:
+            print('Masuk dulu sebagai admin!')
+            return redirect(url_for('admin'))
 
 @app.route('/editdevice/<id>', methods=['GET','POST'])
 def editdevice(id):
@@ -393,18 +433,26 @@ def editdevice(id):
     # Apabila requestnya GET, maka sistem akan menampilkan form edit device
     else:
         cursor.close()
-        return render_template('admin/devices/edit_device.html', data=result)
+        if session['loggedin'] == True and session.get('role_id') == 0:
+            return render_template('admin/devices/edit_device.html', data=result)
+        else:
+            print('Masuk dulu sebagai admin!')
+            return redirect(url_for('admin'))
 
 @app.route('/deletedevice/<id>', methods=['GET','POST'])
 def deletedevice(id):
     # Fungsi untuk menghapus device
     # Proses komunikasi dengan database
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute("DELETE FROM devices WHERE id='%s'" % id)
-    mysql.connection.commit()
-    cursor.close()
-    flash('Successfully deleted!')
-    return redirect(url_for('managedevice'))
+    if session['loggedin'] == True and session.get('role_id') == 0:
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute("DELETE FROM devices WHERE id='%s'" % id)
+        mysql.connection.commit()
+        cursor.close()
+        flash('Successfully deleted!')
+        return redirect(url_for('managedevice'))
+    else:
+        print('Masuk dulu sebagai admin!')
+        return redirect(url_for('admin'))
 
 @app.route('/managebanner', methods=['GET','POST'])
 def managebanner():
@@ -413,7 +461,13 @@ def managebanner():
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute("SELECT * FROM banners")
     result = cursor.fetchall()
-    return render_template('admin/banners/manage_banner.html', banners=result)
+
+    # Memastikan apakah yang membuka halaman adalah admin
+    if session['loggedin'] == True and session.get('role_id') == 0:
+        return render_template('admin/banners/manage_banner.html', banners=result)
+    else:
+        print('Masuk dulu sebagai admin!')
+        return redirect(url_for('admin'))
 
 @app.route('/addbanner', methods=['GET','POST'])
 def addbanner():
@@ -447,7 +501,11 @@ def addbanner():
         return redirect(url_for('managebanner'))
     # Apabila requestnya GET, maka sistem akan menampilkan form edit device
     else:
-        return render_template('admin/banners/add_banner.html')
+        if session['loggedin'] == True and session.get('role_id') == 0:
+            return render_template('admin/banners/add_banner.html')
+        else:
+            print('Masuk dulu sebagai admin!')
+            return redirect(url_for('admin'))
 
 @app.route('/editbanner/<id>', methods=['GET','POST'])
 def editbanner(id):
@@ -485,18 +543,26 @@ def editbanner(id):
     # Apabila requestnya GET, maka sistem akan menampilkan form edit banner
     else:
         cursor.close()
-        return render_template('admin/banners/edit_banner.html', data=result)
+        if session['loggedin'] == True and session.get('role_id') == 0:
+            return render_template('admin/banners/edit_banner.html', data=result)
+        else:
+            print('Masuk dulu sebagai admin!')
+            return redirect(url_for('admin'))
 
 @app.route('/deletebanner/<id>', methods=['GET','POST'])
 def deletebanner(id):
     # Fungsi untuk menghapus banner
     # Proses komunikasi dengan database
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute("DELETE FROM banners WHERE id='%s'" % id)
-    mysql.connection.commit()
-    cursor.close()
-    flash('Successfully deleted!')
-    return redirect(url_for('managebanner'))
+    if session['loggedin'] == True and session.get('role_id') == 0:
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute("DELETE FROM banners WHERE id='%s'" % id)
+        mysql.connection.commit()
+        cursor.close()
+        flash('Successfully deleted!')
+        return redirect(url_for('managebanner'))
+    else:
+        print('Masuk dulu sebagai admin!')
+        return redirect(url_for('admin'))
 
 @app.route('/admin')
 def admin():

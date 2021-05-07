@@ -1,0 +1,13 @@
+<!-- Menggabungkan atau join konten layout.html dengan konten dari file add_product.html.html -->
+{% extends "layout.html" %}
+
+<!-- Mengatur title website -->
+{% block title %}Contact Us - {{ title }}{% endblock %}
+
+<!-- Mengatur css -->
+{% block css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}" type="text/css">
+{% endblock %}
+
+{% block content %}
+{% endblock %}
