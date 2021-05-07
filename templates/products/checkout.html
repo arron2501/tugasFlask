@@ -32,13 +32,16 @@
                                 <img src="/static/images/{{ row.mockup }}" class="w-100">
                             </div>
                             <div class="col-md-3">
-                                <h5 class="font-weight-bold">{{ row.title }}</h5>
+                                <div class="mr-3">
+                                    <p class="text-black-50 font-weight-bold">PRODUCT'S NAME</p>
+                                </div>
+                                <input id="title" name="title" type="text" class="form-control font-weight-bold" value="{{ row.title }}" readonly>
                                 <hr>
                                 <div class="mr-3">
                                     <p class="text-black-50 font-weight-bold">PRICE</p>
                                 </div>
                                 <!-- Memanggil template filter currencyFormat untuk memformat harga menjadi Rupiah -->
-                                <h5 class="font-weight-bold text-danger">{{ row.price | currencyFormat }}</h5>
+                                <input id="price" name="price" type="text" class="form-control font-weight-bold text-danger" value="{{ row.price | currencyFormat }}" readonly>
                                 <hr>
                                 <div class="mr-3">
                                     <p class="text-black-50 font-weight-bold">SELECTED DEVICE</p>

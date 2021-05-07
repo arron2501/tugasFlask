@@ -17,6 +17,7 @@ app.config['MAIL_USERNAME'] = 'ravencase.testflaskmail@gmail.com'
 app.config['MAIL_PASSWORD'] = 'testflaskmail'
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
+app.config['MAIL_ASCII_ATTACHMENTS'] = True
 
 # Mengatur lokasi folder untuk menempatkan file yang akan diupload
 # './static/images/uploads/mockups' and './static/images/uploads/banners'
@@ -53,11 +54,30 @@ def index():
         session["loggedin"] = False
     return render_template('index.html', title="100% QUALITY CUSTOM CASES", home_status="active", nav_place="fixed-top")
 
-@app.route('/contactus')
+@app.route('/contactus', methods=['GET','POST'])
 def contactus():
     # Harus login terlebih dahulu
     if session["loggedin"] == True:
-        return render_template('contactus.html', title="100% QUALITY CUSTOM CASES", contact_status="active", nav_place="fixed-top", footer_place="fixed-bottom")
+        if request.method == 'POST':
+            # Mengambil data dari form
+            subject = request.form['subject']
+            message = request.form['message']
+            # Proses mengirim email
+            msg = Message(subject, sender=(session.get('name'), app.config.get("MAIL_USERNAME")),
+                          recipients=[("Raven Case Team", "ravencase.testflaskmail@gmail.com")])
+            msg.body = message
+            try:
+                mail = Mail(app)
+                mail.connect()
+                mail.send(msg)
+                print('Email sent!')
+                flash('Your email has been sent to our customer service, and will be responded soonly!')
+                return redirect(url_for('contactus'))
+            except:
+                flash('Failed to send ticket email!')
+                return render_template('contactus.html', title="100% QUALITY CUSTOM CASES", contact_status="active", footer_place="fixed-bottom")
+        else:
+            return render_template('contactus.html', title="100% QUALITY CUSTOM CASES", contact_status="active", footer_place="fixed-bottom")
     # Apabila belum login akan redirect kehalaman login
     else:
         flash('You must logged in!')
@@ -85,6 +105,7 @@ def login():
             session['loggedin'] = True
             session['id'] = result['id']
             session['name'] = result['name']
+            session['email'] = result['email']
             session['role_id'] = result['role_id']
             # Jika role_id nya 1 (member), maka otomatis akan redirect ke halaman khusus client
             if session.get('role_id') == 1:
@@ -116,6 +137,8 @@ def logout():
     # Menghapus semua data session
     session.pop('id', None)
     session.pop('name', None)
+    session.pop('email', None)
+    session.pop('role_id', None)
     # Kemudian kembali ke landing page
     return redirect(url_for('index'))
 
@@ -151,7 +174,7 @@ def register():
             # Mengirim email greetings new user
             msg = Message("Registration Success! 🎉", sender=("Raven Case Team", app.config.get("MAIL_USERNAME")),
                           recipients=[(name, email)])
-            msg.html = render_template('email/welcome_user.html')
+            msg.html = render_template('email/welcome_user.html', name=name)
             try:
                 mail = Mail(app)
                 mail.connect()
@@ -213,10 +236,10 @@ def checkout(id):
 
     # Cek apakah device telah dipilih
     device = request.form.get('device')
-    if session['loggedin'] == True :
+    if session['loggedin'] == True:
         if device:
             return render_template('/products/checkout.html', cases_status="active", nav_place="fixed-top",
-                               footer_place="fixed-bottom", products=result, device=device)
+                                   footer_place="fixed-bottom", products=result, device=device)
         # Jika belum, akan muncul pesan flash
         else:
             flash('Please select a device!')
@@ -238,10 +261,52 @@ def checkout_success(id):
         if device:
             # Mengambil data dari form untuk ditampilkan
             address = request.form['address']
-            name = request.form['name']
+            receiver_name = request.form['name']
             tel = request.form['tel']
-            return render_template('/products/checkout_success.html', cases_status="active", nav_place="fixed-top",
-                                   footer_place="fixed-bottom", products=result, device=device, address=address, name=name, tel=tel)
+            title = request.form['title']
+            device = request.form['device']
+            price = request.form['price']
+            username = session.get('name')
+            email = session.get('email')
+
+            # Tanggal checkout
+            checkout_at = datetime.now().strftime("%d %B %Y, %H:%M")
+
+            # Inisialisasi direktori file pdf
+            pdffile = app.config['PDF_FOLDER'] + '/invoice.pdf'
+
+            # Untuk pdf
+            name = request.form['name']
+
+            # Proses render html dengan jinja template agar bisa dikonversi menjadi file pdf
+            venv = jinja2.Environment(loader=jinja2.FileSystemLoader("."))
+            template = venv.get_template('templates/invoice.html')
+            html_out = template.render(title=title, price=price, device=device, name=name, tel=tel, address=address, date=checkout_at)
+            css = 'static/css/invoice.css'
+
+            # Proses konversi menjadi file pdf
+            pdfkit.from_string(html_out, pdffile, configuration=config, css=css)
+
+            # Mengirim email detail order
+            with app.open_resource(pdffile) as fp:
+                # Proses mengirim email detail order
+                # Custom file name attachment pdf
+                filename = "INVOICE_" + username + "_" + datetime.now().strftime("%m%d%Y%H%M%S")
+                msg = Message("Your Order Status 🚀", sender=("Raven Case Team", app.config.get("MAIL_USERNAME")),
+                              recipients=[(username, email)])
+                msg.html = render_template('email/order_success.html', name=username, title=title, price=price, device=device, receiver_name=receiver_name,
+                                           address=address, tel=tel, date=checkout_at)
+                msg.attach(filename, "application/pdf", fp.read())
+                try:
+                    mail = Mail(app)
+                    mail.connect()
+                    mail.send(msg)
+                    print('Email sent!')
+                    return render_template('/products/checkout_success.html', cases_status="active", nav_place="fixed-top",
+                                           footer_place="fixed-bottom", products=result, device=device, address=address,
+                                           name=receiver_name, tel=tel)
+                except:
+                    return print('Failed to send email!')
         else:
             flash('Please select a device!')
             return redirect(url_for('showProduct', id=id))
@@ -606,28 +671,8 @@ def register_admin():
     else:
         return render_template('auth/register_admin.html', footer_place="fixed-bottom", register_status="active")
 
-@app.route('/konversi', methods=['GET','POST'])
-def konversi():
-    # Inisialisasi direktori output pdf
-    pdffile = app.config['PDF_FOLDER'] + '/invoice.pdf'
-
-    # Mengambil data untuk dirender
-    title = request.form['title']
-    price = request.form['price']
-    device = request.form['device']
-    name = request.form['name']
-    tel = request.form['tel']
-    address = request.form['address']
-
-    # Proses render html dengan jinja template agar bisa dikonversi menjadi file pdf
-    venv = jinja2.Environment(loader=jinja2.FileSystemLoader("."))
-    template = venv.get_template('templates/invoice.html')
-    html_out = template.render(title=title, price=price, device=device, name=name, tel=tel, address=address)
-    css = 'static/css/invoice.css'
-
-    # Proses konversi menjadi file pdf
-    pdfkit.from_string(html_out, pdffile, configuration=config, css=css)
-
+@app.route('/downloadpdf', methods=['GET','POST'])
+def downloadpdf():
     # User akan diredirect ke link download file pdf
     return redirect("http://localhost:5000/static/pdf/invoice.pdf", code=302)
 

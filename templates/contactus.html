@@ -4,10 +4,48 @@
 <!-- Mengatur title website -->
 {% block title %}Contact Us - {{ title }}{% endblock %}
 
-<!-- Mengatur css -->
-{% block css %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}" type="text/css">
-{% endblock %}
-
 {% block content %}
+    <!-- Konten yang dirender -->
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <!-- Kode untuk menampilkan pesan flash -->
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <p class="text-center" style="color: green">{{ message }}</p>
+                    {% endfor %}
+                {% endif %}
+                {% endwith %}
+                <div class="card">
+                    <div class="card-header">Contact Us</div>
+{#                    <div class="text-center p-4">#}
+{#                        <img src="{{ url_for('static', filename='images/logo.png') }}" height="200">#}
+{#                    </div>#}
+                    <div class="card-body">
+                        <!-- Form register -->
+                        <form method="POST" action="/contactus">
+                            <div class="form-group row">
+                                <label for="subject" class="col-md-4 col-form-label text-md-right">Subject</label>
+                                <div class="col-md-6">
+                                    <input id="subject" type="text" class="form-control" name="subject" required autocomplete="subject" autofocus>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="message" class="col-md-4 col-form-label text-md-right">Message</label>
+                                <div class="col-md-6">
+                                    <textarea id="message" rows="3" class="form-control" name="message" required autocomplete="message"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group row mb-0">
+                                <div class="col-md-6 offset-md-4">
+                                    <button type="submit" class="btn btn-primary">Send Ticket</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
