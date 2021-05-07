@@ -2,7 +2,7 @@
 {% extends "layout.html" %}
 
 <!-- Mengatur title website -->
-{% block title %}Our Products {{ title }}{% endblock %}
+{% block title %}Checkout {{ title }}{% endblock %}
 
 <!-- Mengatur css -->
 {% block css %}
@@ -24,48 +24,51 @@
                     {% endif %}
                 {% endwith %}
                 <!-- Menampilkan produk yang diklik -->
+                <h3 class="font-weight-bold text-info">Confirm Checkout</h3><br>
                 {% for row in products %}
-                    <form method="POST" action="/checkout/{{ row.id }}">
+                    <form method="POST" action="/checkout_success/{{ row.id }}">
                         <div class="form-group row">
-                            <div class="col-4">
+                            <div class="col-md-2">
                                 <img src="/static/images/{{ row.mockup }}" class="w-100">
                             </div>
-                            <div class="col-8">
-                                <h3 class="font-weight-bold">{{ row.title }}</h3>
+                            <div class="col-md-3">
+                                <h5 class="font-weight-bold">{{ row.title }}</h5>
                                 <hr>
                                 <div class="mr-3">
                                     <p class="text-black-50 font-weight-bold">PRICE</p>
                                 </div>
                                 <!-- Memanggil template filter currencyFormat untuk memformat harga menjadi Rupiah -->
-                                <h2 class="font-weight-bold text-danger">{{ row.price | currencyFormat }}</h2>
+                                <h5 class="font-weight-bold text-danger">{{ row.price | currencyFormat }}</h5>
                                 <hr>
                                 <div class="mr-3">
-                                    <p class="text-black-50 font-weight-bold">SUITABLE FOR</p>
+                                    <p class="text-black-50 font-weight-bold">SELECTED DEVICE</p>
                                 </div>
-                                <div class="d-flex align-items-center">
-                                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                                        <div class="pr-3">
-                                            <!-- Menampilkan device secara dynamic -->
-                                            {% for row2 in devices %}
-                                                <label class="btn btn-outline-primary btn-sm">
-                                                    <input type="radio" name="device" value="{{ row2.name }}" autocomplete="off"> {{ row2.name }}
-                                                </label>
-                                            {% endfor %}
-                                        </div>
+                                <input id="device" name="device" type="text" class="form-control font-weight-bold" value="{{ device }}" readonly>
+                                <hr>
+                            </div>
+                            <div class="col-md-7">
+                                <h5 class="font-weight-bold">DELIVERY</h5>
+                                <hr>
+                                <div class="form-row">
+                                    <div class="mb-3 form-group col-md-6">
+                                        <label for="name">Receiver's name:</label>
+                                        <input type="text" class="form-control" id="name" name="name" value="{{ session["name"] }}" required>
+                                    </div>
+                                    <div class="mb-3 form-group col-md-6">
+                                        <label for="tel">Phone number:</label>
+                                        <input type="tel" class="form-control" id="tel" name="tel" required>
                                     </div>
                                 </div>
-                                <hr>
-                                <div class="mr-3">
-                                    <p class="text-black-50 font-weight-bold">DESCRIPTION</p>
+                                <div class="mb-3">
+                                    <label for="address">Delivery address:</label>
+                                    <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
                                 </div>
-                                <h5>{{ row.description }}</h5>
                                 <hr>
                                 <div class="d-flex align-items-center">
                                     <div class="pr-2">
                                         <!-- Tombol checkout -->
-                                        <button type="submit" class="btn btn-outline-primary">Buy Now</button>
+                                        <button type="submit" class="btn btn-primary">Confirm Checkout</button>
                                     </div>
-                                    <a href="" class="btn btn-primary">Add To Cart</a>
                                 </div>
                             </div>
                         </div>

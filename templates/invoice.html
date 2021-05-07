@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+        <title>Invoice</title>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-12 d-flex-row text-center">
+                    <div class="mt-5 mb-4">
+                        <img src="https://cdn.discordapp.com/attachments/744921081311395870/839794145388003328/New_Logo_Raven_Case_no_Mask.png" alt="Raven Case Logo" class="w-25">
+                    </div>
+                    <div class="mb-5">
+                        <h5 class="font-weight-bold">100% QUALITY CUSTOM CASES</h5>
+                        <h5 class="font-weight-bold">BEST PRICE | BEST QUALITY | BEST DESIGN</h5>
+                    </div>
+                    <h3 class="text-info">========== Buyer's Invoice ==========</h3>
+                    <div class="mt-5">
+                        <h4><u>Delivery Address :</u></h4>
+                    </div>
+                    <div class="mt-4">
+                        <h5 class="font-weight-bold">{{ name }}</h5>
+                        <h5>{{ address }}</h5>
+                        <h5>{{ tel }}</h5>
+                    </div>
+                    <div class="mt-5">
+                        <h4><u>Order Details :</u></h4>
+                    </div>
+                    <table class="table table-striped table-bordered mt-4 mb-5">
+                        <thead>
+                            <tr>
+                                <th scope="col">Product Name</th>
+                                <th scope="col">Device</th>
+                                <th scope="col">Qty</th>
+                                <th scope="col">Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ title }}</td>
+                                <td>{{ device }}</td>
+                                <td>1</td>
+                                <td>{{ price }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="font-weight-bold text-success">Subtotal</td>
+                                <td class="font-weight-bold text-danger">{{ price }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <div class="text-center text-white py-4" style="background: #1C252E">
+                <div class="footer-copyright text-center">
+                    © 2020 Raven Case:<strong> All Rights Reserved.</strong>
+                </div>
+            </div>
+        </footer>
+
+        <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
+        </body>
+</html>

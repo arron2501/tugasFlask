@@ -1,4 +1,4 @@
-import MySQLdb, os, hashlib
+import MySQLdb, os, hashlib, pdfkit, jinja2
 from flask import Flask, render_template, redirect, request, url_for, flash, session
 from flask_mysqldb import MySQL
 from datetime import datetime, timedelta
@@ -27,6 +27,12 @@ app.config['SECRET_KEY'] = 'ravencase_##$@%%'
 
 # Mengatur lamanya session akan tersimpan (opsional)
 app.permanent_session_lifetime = timedelta(days=1)
+
+# Konfigurasi pdfkit
+path_wkhtmltopdf = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
+config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
+app.config['PDF_FOLDER'] = os.path.realpath('.') + \
+   '/static/pdf'
 
 # Mengatur konfigurasi database
 app.config['MYSQL_HOST'] = 'localhost'
@@ -186,6 +192,50 @@ def showProduct(id):
     cursor2.execute("SELECT * FROM devices")
     result2 = cursor2.fetchall()
     return render_template('products/show.html', cases_status="active", nav_place="fixed-top", footer_place="fixed-bottom", products=result, devices=result2)
+
+@app.route('/checkout/<string:id>', methods=['GET','POST'])
+def checkout(id):
+    # Fungsi untuk menampilkan page checkout
+    # Proses komunikasi dengan database
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute("SELECT * FROM products WHERE id = %s", (id,))
+    result = cursor.fetchall()
+
+    # Cek apakah device telah dipilih
+    device = request.form.get('device')
+    if session['loggedin'] == True :
+        if device:
+            return render_template('/products/checkout.html', cases_status="active", nav_place="fixed-top",
+                               footer_place="fixed-bottom", products=result, device=device)
+        # Jika belum, akan muncul pesan flash
+        else:
+            flash('Please select a device!')
+            return redirect(url_for('showProduct', id=id))
+    else:
+        return redirect(url_for('login'))
+
+@app.route('/checkout_success/<string:id>', methods=['GET','POST'])
+def checkout_success(id):
+    # Fungsi untuk menampilkan page sukses checkout
+    # Proses komunikasi dengan database
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute("SELECT * FROM products WHERE id = %s", (id,))
+    result = cursor.fetchall()
+
+    device = request.form.get('device')
+    if session['loggedin'] == True:
+        if device:
+            # Mengambil data dari form untuk ditampilkan
+            address = request.form['address']
+            name = request.form['name']
+            tel = request.form['tel']
+            return render_template('/products/checkout_success.html', cases_status="active", nav_place="fixed-top",
+                                   footer_place="fixed-bottom", products=result, device=device, address=address, name=name, tel=tel)
+        else:
+            flash('Please select a device!')
+            return redirect(url_for('showProduct', id=id))
+    else:
+        return redirect(url_for('login'))
 
 def allowed_file(filename):
     # Fungsi untuk mengecek filename dari data yang diinput
@@ -489,6 +539,31 @@ def register_admin():
     # Apabila requestnya GET, maka sistem akan menampilkan form register admin
     else:
         return render_template('auth/register_admin.html', footer_place="fixed-bottom", register_status="active")
+
+@app.route('/konversi', methods=['GET','POST'])
+def konversi():
+    # Inisialisasi direktori output pdf
+    pdffile = app.config['PDF_FOLDER'] + '/invoice.pdf'
+
+    # Mengambil data untuk dirender
+    title = request.form['title']
+    price = request.form['price']
+    device = request.form['device']
+    name = request.form['name']
+    tel = request.form['tel']
+    address = request.form['address']
+
+    # Proses render html dengan jinja template agar bisa dikonversi menjadi file pdf
+    venv = jinja2.Environment(loader=jinja2.FileSystemLoader("."))
+    template = venv.get_template('templates/invoice.html')
+    html_out = template.render(title=title, price=price, device=device, name=name, tel=tel, address=address)
+    css = 'static/css/invoice.css'
+
+    # Proses konversi menjadi file pdf
+    pdfkit.from_string(html_out, pdffile, configuration=config, css=css)
+
+    # User akan diredirect ke link download file pdf
+    return redirect("http://localhost:5000/static/pdf/invoice.pdf", code=302)
 
 if __name__ == '__main__':
     app.run()

@@ -1,0 +1,83 @@
+<!-- Menggabungkan atau join konten layout.html dengan konten dari file add_product.html.html -->
+{% extends "layout.html" %}
+
+<!-- Mengatur title website -->
+{% block title %}Checkout {{ title }}{% endblock %}
+
+<!-- Mengatur css -->
+{% block css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/products.css') }}" type="text/css">
+{% endblock %}
+
+<!-- Mengatur konten yang akan dirender oleh template child -->
+{% block content %}
+    <!-- Konten yang dirender -->
+    <div class="container mb-5 mt-5">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Kode untuk menampilkan pesan flash -->
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        {% for message in messages %}
+                            <p class="text-center" style="color: red">{{ message }}</p>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                <!-- Menampilkan produk yang diklik -->
+                <h3 class="font-weight-bold text-success">Checkout Success!</h3><br>
+                {% for row in products %}
+                    <form method="POST" action="/konversi">
+                        <div class="form-group row">
+                            <div class="col-md-2">
+                                <img src="/static/images/{{ row.mockup }}" class="w-100">
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mr-3">
+                                    <p class="text-black-50 font-weight-bold">PRODUCT'S NAME</p>
+                                </div>
+                                <input id="title" name="title" type="text" class="form-control font-weight-bold" value="{{ row.title }}" readonly>
+                                <hr>
+                                <div class="mr-3">
+                                    <p class="text-black-50 font-weight-bold">PRICE</p>
+                                </div>
+                                <!-- Memanggil template filter currencyFormat untuk memformat harga menjadi Rupiah -->
+                                <input id="price" name="price" type="text" class="form-control font-weight-bold text-danger" value="{{ row.price | currencyFormat }}" readonly>
+                                <hr>
+                                <div class="mr-3">
+                                    <p class="text-black-50 font-weight-bold">SELECTED DEVICE</p>
+                                </div>
+                                <input id="device" name="device" type="text" class="form-control font-weight-bold" value="{{ device }}" readonly>
+                                <hr>
+                            </div>
+                            <div class="col-md-7">
+                                <h5 class="font-weight-bold">DELIVERY</h5>
+                                <hr>
+                                <div class="form-row">
+                                    <div class="mb-3 form-group col-md-6">
+                                        <label for="name">Receiver's name:</label>
+                                        <input type="text" class="form-control" id="name" name="name" value="{{ name }}" readonly>
+                                    </div>
+                                    <div class="mb-3 form-group col-md-6">
+                                        <label for="tel">Phone number:</label>
+                                        <input type="tel" class="form-control" id="tel" name="tel" value="{{ tel }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="address">Delivery address:</label>
+                                    <textarea class="form-control" id="address" name="address" readonly rows="3">{{ address }}</textarea>
+                                </div>
+                                <hr>
+                                <div class="d-flex align-items-center">
+                                    <div class="pr-2">
+                                        <!-- Tombol checkout -->
+                                        <button type="submit" class="btn btn-primary">Download Invoice (PDF)</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -23,6 +23,6 @@ body {
     transform: scale(1.05);
 }
 
-[type='radio'] {
+input[type="radio"] {
     display: none;
 }
