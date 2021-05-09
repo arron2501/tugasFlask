@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 07 Bulan Mei 2021 pada 18.45
+-- Waktu pembuatan: 09 Bulan Mei 2021 pada 10.25
 -- Versi server: 10.4.17-MariaDB
 -- Versi PHP: 8.0.1
 
@@ -91,11 +91,7 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`id`, `title`, `description`, `price`, `mockup`, `created_at`, `updated_at`) VALUES
-(22, 'Astronaut Case 002', 'Cool case!!', 109000, 'uploads/mockups/Mockup_IG_ASTRO-8.jpg', '2021-03-07 16:25:07', '2021-03-07 19:52:26'),
-(25, 'testwkwkte', 'test', 23, 'uploads/mockups/Mockup_IG_ASTRO-9.jpg', '2021-03-08 11:12:40', '2021-03-08 11:12:40'),
-(26, 's', 'd', 3, 'uploads/mockups/Mockup_IG_ASTRO-8.jpg', '2021-03-08 11:17:47', '2021-03-08 11:17:47'),
-(27, 'bb', 'bb', 555, 'uploads/mockups/Mockup_IG_ASTRO-7.jpg', '2021-03-08 11:22:09', '2021-03-08 11:22:09'),
-(28, 'ah', 'ah', 12, 'uploads/mockups/Mockup_IG_ASTRO-3.jpg', '2021-03-08 11:22:39', '2021-03-08 11:22:39');
+(22, 'Astronaut Case 002', 'Cool case!!', 109000, 'uploads/mockups/Mockup_IG_ASTRO-8.jpg', '2021-03-07 16:25:07', '2021-03-07 19:52:26');
 
 -- --------------------------------------------------------
 
@@ -118,7 +114,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `role_id`, `name`, `email`, `password`, `created_at`, `updated_at`) VALUES
-(97, 1, 'Rivaltino Arron', 'arron2501@gmail.com', '202cb962ac59075b964b07152d234b70', '2021-05-07 16:44:12', '2021-05-07 16:44:12');
+(98, 1, 'Rivaltino Arron', 'arron2501@gmail.com', 'cd7384b12f707e550e86363da9b8c2bf', '2021-05-09 07:47:26', '2021-05-09 07:47:26'),
+(99, 0, 'Admin Raven Case', 'ravencase.testflaskmail@gmail.com', '21232f297a57a5a743894a0e4a801fc3', '2021-05-09 08:23:15', '2021-05-09 08:23:15');
 
 --
 -- Indexes for dumped tables
@@ -174,7 +171,7 @@ ALTER TABLE `products`
 -- AUTO_INCREMENT untuk tabel `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=98;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=100;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
